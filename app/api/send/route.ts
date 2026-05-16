@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
 
     const account = privateKeyToAccount(privateKey as `0x${string}`);
     const AppKit = await import('@circle-fin/app-kit');
-    const { ViemV2Adapter } = await import('@circle-fin/adapter-viem-v2');
+    const { ViemAdapter } = await import('@circle-fin/adapter-viem-v2');
 
-    const adapter = new ViemV2Adapter({
+    const adapter = new ViemAdapter({
       walletClient: createWalletClient({ account, chain: arcTestnet, transport: http() }),
     });
 
