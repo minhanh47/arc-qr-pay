@@ -73,7 +73,10 @@ export default function Home() {
       <header className={styles.header}>
         <div className={styles.logo}>◆ Arc<span className={styles.accent}>QR</span>Pay</div>
         <p className={styles.sub}>AI-powered QR Payment on Arc Network</p>
-        <div className={styles.walletRow}><w3m-button /></div>
+        <div className={styles.walletRow}>
+          {/* @ts-ignore */}
+          <w3m-button />
+        </div>
         {isConnected && <p className={styles.address}>Connected: {address?.slice(0,6)}...{address?.slice(-4)}</p>}
       </header>
 
