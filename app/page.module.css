@@ -132,3 +132,15 @@
   font-size: 13px;
   text-decoration: none;
 }
+.walletRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.address {
+  text-align: center;
+  color: #00d4ff;
+  font-size: 13px;
+  margin-top: 8px;
+}
