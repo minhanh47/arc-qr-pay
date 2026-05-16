@@ -4,14 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useAccount, useWalletClient } from 'wagmi';
 import styles from './page.module.css';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'w3m-button': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-    }
-  }
-}
-
 export default function Home() {
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
