@@ -57,12 +57,12 @@ export default function Home() {
       const data = await res.json();
       if (data.txHash) {
         setTxHash(data.txHash);
-        setStatus('✅ Payment sent!');
+        setStatus('Payment sent!');
       } else {
-        setStatus('❌ Error: ' + (data.error || 'Unknown'));
+        setStatus('Error: ' + (data.error || 'Unknown'));
       }
     } catch {
-      setStatus('❌ Network error');
+      setStatus('Network error');
     }
   };
 
@@ -71,11 +71,10 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <div className={styles.logo}>◆ Arc<span className={styles.accent}>QR</span>Pay</div>
+        <div className={styles.logo}>Arc QR Pay</div>
         <p className={styles.sub}>AI-powered QR Payment on Arc Network</p>
         <div className={styles.walletRow}>
-          {/* @ts-ignore */}
-          <w3m-button />
+          <w3m-button></w3m-button>
         </div>
         {isConnected && <p className={styles.address}>Connected: {address?.slice(0,6)}...{address?.slice(-4)}</p>}
       </header>
@@ -86,9 +85,9 @@ export default function Home() {
             <p style={{ textAlign: 'center', color: '#888' }}>Please connect your wallet to continue</p>
           </div>
         ) : (
-          <>
+          <div>
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>📷 Scan QR Code</h2>
+              <h2 className={styles.cardTitle}>Scan QR Code</h2>
               {!scanning ? (
                 <button className={styles.btn} onClick={startCamera}>Open Camera</button>
               ) : (
@@ -96,22 +95,22 @@ export default function Home() {
               )}
               <video ref={videoRef} className={styles.video} style={{ display: scanning ? 'block' : 'none' }} />
               <div className={styles.divider}>or enter address manually</div>
-              <input className={styles.input} placeholder="0x... or ethereum:0x..." onChange={e => parseQR(e.target.value)} />
+              <input className={styles.input} placeholder="0x..." onChange={e => parseQR(e.target.value)} />
             </div>
 
             {parsed && (
               <div className={styles.card}>
-                <h2 className={styles.cardTitle}>💳 Payment Details</h2>
-                <div className={styles.row}><span>To</span><span className="mono">{parsed.address.slice(0,10)}...{parsed.address.slice(-6)}</span></div>
+                <h2 className={styles.cardTitle}>Payment Details</h2>
+                <div className={styles.row}><span>To</span><span>{parsed.address.slice(0,10)}...{parsed.address.slice(-6)}</span></div>
                 <div className={styles.row}><span>Amount</span><input className={styles.amountInput} value={parsed.amount} onChange={e => setParsed({ ...parsed, amount: e.target.value })} /></div>
-                <div className={styles.row}><span>Token</span><span className="mono">{parsed.token}</span></div>
-                <div className={styles.row}><span>Network</span><span className="mono">Arc Testnet</span></div>
-                <button className={styles.btn} onClick={sendPayment}>Send {parsed.amount} {parsed.token} ↗</button>
+                <div className={styles.row}><span>Token</span><span>{parsed.token}</span></div>
+                <div className={styles.row}><span>Network</span><span>Arc Testnet</span></div>
+                <button className={styles.btn} onClick={sendPayment}>Send {parsed.amount} {parsed.token}</button>
                 {status && <p className={styles.status}>{status}</p>}
-                {txHash && <a className={styles.explorer} href={`https://testnet.arcscan.app/tx/${txHash}`} target="_blank" rel="noreferrer">View on Explorer ↗</a>}
+                {txHash && <a className={styles.explorer} href={'https://testnet.arcscan.app/tx/' + txHash} target="_blank" rel="noreferrer">View on Explorer</a>}
               </div>
             )}
-          </>
+          </div>
         )}
       </main>
     </div>
