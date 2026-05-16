@@ -1,4 +1,4 @@
-// updated v2
+// updated v3
 import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     if (!privateKey || !kitKey) {
       return NextResponse.json({ error: 'Missing env vars' }, { status: 500 });
     }
-    const { createWalletClient, http } = await import('viem');
+    const { createWalletClient, createPublicClient, http } = await import('viem');
     const { privateKeyToAccount } = await import('viem/accounts');
     const { defineChain } = await import('viem');
     const arcTestnet = defineChain({
@@ -21,10 +21,14 @@ export async function POST(req: NextRequest) {
       rpcUrls: { default: { http: ['https://testnet.arc.network'] } },
     });
     const account = privateKeyToAccount(privateKey as `0x${string}`);
+    const walletClient = createWalletClient({ account, chain: arcTestnet, transport: http() });
+    const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
     const AppKit = await import('@circle-fin/app-kit');
     const { ViemAdapter } = await import('@circle-fin/adapter-viem-v2');
-    const walletClient = createWalletClient({ account, chain: arcTestnet, transport: http() });
-    const adapter = new ViemAdapter(walletClient, { chain: arcTestnet });
+    const adapter = new ViemAdapter({
+      getWalletClient: async () => walletClient,
+      getPublicClient: async () => publicClient,
+    });
     const kit = new AppKit.AppKit({ apiKey: kitKey, adapter });
     const result = await kit.send({
       to,
