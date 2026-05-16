@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useAccount, useWalletClient } from 'wagmi';
 import styles from './page.module.css';
 
 export default function Home() {
+  const { address, isConnected } = useAccount();
+  const { data: walletClient } = useWalletClient();
   const [scanning, setScanning] = useState(false);
   const [parsed, setParsed] = useState<{ address: string; amount: string; token: string } | null>(null);
   const [status, setStatus] = useState<string>('');
@@ -36,8 +39,6 @@ export default function Home() {
     const tokenMatch = data.match(/[?&]token=([A-Z]+)/);
     if (ethMatch) {
       setParsed({ address: ethMatch[1], amount: amountMatch ? amountMatch[1] : '1', token: tokenMatch ? tokenMatch[1] : 'USDC' });
-    } else if (data.startsWith('0x') && data.length === 42) {
-      setParsed({ address: data, amount: '1', token: 'USDC' });
     } else {
       setParsed({ address: data, amount: '1', token: 'USDC' });
     }
@@ -45,7 +46,7 @@ export default function Home() {
   };
 
   const sendPayment = async () => {
-    if (!parsed) return;
+    if (!parsed || !walletClient) return;
     setStatus('Sending...');
     try {
       const res = await fetch('/api/send', {
@@ -72,34 +73,20 @@ export default function Home() {
       <header className={styles.header}>
         <div className={styles.logo}>◆ Arc<span className={styles.accent}>QR</span>Pay</div>
         <p className={styles.sub}>AI-powered QR Payment on Arc Network</p>
+        <div className={styles.walletRow}>
+          <w3m-button />
+        </div>
+        {isConnected && <p className={styles.address}>Connected: {address?.slice(0,6)}...{address?.slice(-4)}</p>}
       </header>
 
       <main className={styles.main}>
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>📷 Scan QR Code</h2>
-          {!scanning ? (
-            <button className={styles.btn} onClick={startCamera}>Open Camera</button>
-          ) : (
-            <button className={styles.btnStop} onClick={stopCamera}>Stop Camera</button>
-          )}
-          <video ref={videoRef} className={styles.video} style={{ display: scanning ? 'block' : 'none' }} />
-          <div className={styles.divider}>or enter address manually</div>
-          <input className={styles.input} placeholder="0x... or ethereum:0x..." onChange={e => parseQR(e.target.value)} />
-        </div>
-
-        {parsed && (
+        {!isConnected ? (
           <div className={styles.card}>
-            <h2 className={styles.cardTitle}>💳 Payment Details</h2>
-            <div className={styles.row}><span>To</span><span className="mono">{parsed.address.slice(0, 10)}...{parsed.address.slice(-6)}</span></div>
-            <div className={styles.row}><span>Amount</span><input className={styles.amountInput} value={parsed.amount} onChange={e => setParsed({ ...parsed, amount: e.target.value })} /></div>
-            <div className={styles.row}><span>Token</span><span className="mono">{parsed.token}</span></div>
-            <div className={styles.row}><span>Network</span><span className="mono">Arc Testnet</span></div>
-            <button className={styles.btn} onClick={sendPayment}>Send {parsed.amount} {parsed.token} ↗</button>
-            {status && <p className={styles.status}>{status}</p>}
-            {txHash && <a className={styles.explorer} href={`https://testnet.arcscan.app/tx/${txHash}`} target="_blank" rel="noreferrer">View on Explorer ↗</a>}
+            <p style={{ textAlign: 'center', color: '#888' }}>Please connect your wallet to continue</p>
           </div>
-        )}
-      </main>
-    </div>
-  );
-}
+        ) : (
+          <>
+            <div className={styles.card}>
+              <h2 className={styles.cardTitle}>📷 Scan QR Code</h2>
+              {!scanning ? (
+                <button cla
