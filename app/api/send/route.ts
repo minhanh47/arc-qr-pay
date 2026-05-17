@@ -1,4 +1,4 @@
-// updated v3
+// updated v4
 import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
     const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
     const AppKit = await import('@circle-fin/app-kit');
     const { ViemAdapter } = await import('@circle-fin/adapter-viem-v2');
-    const adapter = new ViemAdapter({
-      getWalletClient: async () => walletClient,
-      getPublicClient: async () => publicClient,
-    });
+    const adapter = new ViemAdapter(
+      { getWalletClient: async () => walletClient, getPublicClient: async () => publicClient },
+      { chain: arcTestnet }
+    );
     const kit = new AppKit.AppKit({ apiKey: kitKey, adapter });
     const result = await kit.send({
       to,
