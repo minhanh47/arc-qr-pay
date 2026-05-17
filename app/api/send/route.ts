@@ -1,4 +1,4 @@
-// updated v4
+// v5
 import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
     const walletClient = createWalletClient({ account, chain: arcTestnet, transport: http() });
     const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
     const AppKit = await import('@circle-fin/app-kit');
-    const { ViemAdapter } = await import('@circle-fin/adapter-viem-v2');
-    const adapter = new ViemAdapter(
+    const adapterMod = await import('@circle-fin/adapter-viem-v2');
+    const adapter = new adapterMod.ViemAdapter(
       { getWalletClient: async () => walletClient, getPublicClient: async () => publicClient },
       { chain: arcTestnet }
     );
