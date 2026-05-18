@@ -30,7 +30,7 @@ export async function POST(req) {
         getWalletClient: () => walletClient,
         getPublicClient: () => publicClient,
         addressContext: 'user-controlled',
-        supportedChains: [arcTestnet],
+        supportedChains: [{ chainId: 2911 }],
       },
       {}
     );
