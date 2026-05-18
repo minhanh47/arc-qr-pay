@@ -1,4 +1,5 @@
-// v5
+// v6
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
@@ -26,8 +27,8 @@ export async function POST(req: NextRequest) {
     const AppKit = await import('@circle-fin/app-kit');
     const adapterMod = await import('@circle-fin/adapter-viem-v2');
     const adapter = new adapterMod.ViemAdapter(
-      { getWalletClient: async () => walletClient, getPublicClient: async () => publicClient },
-      { chain: arcTestnet }
+      { getWalletClient: async () => walletClient as any, getPublicClient: async () => publicClient as any },
+      { chain: arcTestnet } as any
     );
     const kit = new AppKit.AppKit({ apiKey: kitKey, adapter });
     const result = await kit.send({
