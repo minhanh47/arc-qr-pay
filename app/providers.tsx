@@ -4,6 +4,7 @@ import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { defineChain } from 'viem';
+import { useState, useEffect } from 'react';
 
 const arcTestnet = defineChain({
   id: 2911,
@@ -34,10 +35,13 @@ createWeb3Modal({ wagmiConfig: config, projectId });
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        {mounted ? children : null}
       </QueryClientProvider>
     </WagmiProvider>
   );
