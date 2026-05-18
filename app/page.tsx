@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useAccount, useWalletClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import styles from './page.module.css';
 
 export default function Home() {
   const { address, isConnected } = useAccount();
-  const { data: walletClient } = useWalletClient();
   const [scanning, setScanning] = useState(false);
   const [parsed, setParsed] = useState<{ address: string; amount: string; token: string } | null>(null);
   const [status, setStatus] = useState<string>('');
@@ -46,7 +45,7 @@ export default function Home() {
   };
 
   const sendPayment = async () => {
-    if (!parsed || !walletClient) return;
+    if (!parsed) return;
     setStatus('Sending...');
     try {
       const res = await fetch('/api/send', {
