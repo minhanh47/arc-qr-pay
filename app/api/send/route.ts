@@ -26,8 +26,13 @@ export async function POST(req) {
     const AppKit = await import('@circle-fin/app-kit');
     const adapterMod = await import('@circle-fin/adapter-viem-v2');
     const adapter = new adapterMod.ViemAdapter(
-      { getWalletClient: () => walletClient, getPublicClient: () => publicClient },
-      { chain: arcTestnet }
+      {
+        getWalletClient: () => walletClient,
+        getPublicClient: () => publicClient,
+        addressContext: 'user-controlled',
+        supportedChains: [arcTestnet],
+      },
+      {}
     );
     const kit = new AppKit.AppKit({ apiKey: kitKey, adapter });
     const result = await kit.send({
